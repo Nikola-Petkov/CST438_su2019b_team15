@@ -4,8 +4,8 @@ RSpec.describe "Orders", type: :request do
   
   before(:each) do 
     # create database record for a customer
-    Order.create(itemId: 1, description: "some item", customerId: 1)
-    #allow(Order).to receive(:customerId) { 1 }
+    #Order.create(itemId: 1, description: "some item", customerId: 1)
+    allow(Order).to receive(:create) { 1 }
   end 
   
   describe "GET /orders?customerId=" do
@@ -15,17 +15,17 @@ RSpec.describe "Orders", type: :request do
       get '/orders?customerId=1', headers: headers
       expect(response).to have_http_status(200)
       json_response = JSON.parse(response.body)
-      customer = json_response['lastName']
-      expect(customer).to eq 'Petkov'
+      customer = json_response['customerId']
+      expect(customer).to eq 1
     end
     
-    it 'get customer information by email' do
+    it 'get order information by email' do
       headers = { "ACCEPT" => "application/json"}    # Rails 4
-      get '/customers?email=npetkov@csumb.edu', headers: headers
+      get '/orders?email=npetkov@csumb.edu', headers: headers
       expect(response).to have_http_status(200)
       json_response = JSON.parse(response.body)
-      customer = json_response['firstName']
-      expect(customer).to eq 'Nikola'
+      customer = json_response['customerId']
+      expect(customer).to eq 1
     end
     
     it 'get customer by non-existent ID should fail' do
