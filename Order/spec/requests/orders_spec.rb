@@ -4,13 +4,13 @@ RSpec.describe "Orders", type: :request do
   
   before(:each) do 
     # create database record for a customer
-    Orders.search(customerId: 1)
-    allow(Orders).to receive(:customerId) { 1 } 
+    Order.create(itemId: 1, description: "some item", customerId: 1)
+    #allow(Order).to receive(:customerId) { 1 }
   end 
   
   describe "GET /orders?customerId=" do
     
-    it 'get customer information by ID' do
+    it 'get order information by ID' do
       headers = { "ACCEPT" => "application/json"}    # Rails 4
       get '/orders?customerId=1', headers: headers
       expect(response).to have_http_status(200)
