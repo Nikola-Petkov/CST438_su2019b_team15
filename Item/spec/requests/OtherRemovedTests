@@ -1,0 +1,16 @@
+
+  
+  describe "POST /items" do
+    #
+    it 'register a item' do
+      headers = { "CONTENT_TYPE" => "application/json" ,
+                  "ACCEPT" => "application/json" }  # Rails 4
+      item = {'description' => 'Cooler toy 2',
+                  'price' => 2.0,
+                  'stockQty' => 2 }
+      post '/items', :params => item.to_json, :headers => headers
+      expect(response).to have_http_status(201)
+      item_response = JSON.parse(response.body)
+      expect(item_response).to include item
+    end
+  end
