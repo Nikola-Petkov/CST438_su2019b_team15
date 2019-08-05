@@ -11,6 +11,11 @@ class OrderClient
             headers: { 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
     end
     
+    def self.createItem(data)
+        post '/items', body: data.to_json,
+            headers: { 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
+    end
+    
     def self.getCustomer(cust)
         if !cust.include? '@' 
             get "/orders?customerId=#{cust}"
@@ -20,7 +25,11 @@ class OrderClient
     end
     
     def self.getOrder(id)
-        get "/orders/:#{id}"
+        get "/orders/#{id}"
+    end
+    
+    def self.getItem(id)
+        get "/items/#{id}"
     end
     
     def self.newOrder(data)
@@ -47,6 +56,18 @@ while true
         puts "Register a new customer. Enter lastName, firstName, email."
         data = gets.chomp!.split()
         response = OrderClient.register lastName: data[0], firstName: data[1], email: data[2]
+        puts "status code #{response.code}"
+        puts response.body
+    when '2'
+        puts "Create an item. Enter description, price, stockQty:"
+        data = gets.chomp!.split()
+        response = OrderClient.createItem description: data[0], price: data[1], stockQty: data[2]
+        puts "status code #{response.code}"
+        puts response.body
+    when '5'
+        puts "Lookup item. Enter item ID:"
+        id = gets.chomp!
+        response = OrderClient.getItem(id)
         puts "status code #{response.code}"
         puts response.body
     when '6'
