@@ -11,51 +11,54 @@ class OrderClient
             headers: { 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
     end
     
-    def self.getId(id)
-        get "/customers?id=#{id}"
+    def self.getCustomer(cust)
+        if !cust.include? '@' 
+            get "/orders?customerId=#{cust}"
+        else
+            get "/orders?email=#{cust}"
+        end
     end
     
-    def self.getEmail(email)
-        get "/customers?email=#{email}"
+    def self.getOrder(id)
+        get "/orders/:#{id}"
     end
     
-    def self.searchCust(id)
-        get "/orders?customerId=#{id}"
+    def self.newOrder(data)
+        post "/orders", body: data.to_json,
+            headers: { 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
     end
-    
 end
 
 while true
-    puts "What do you want to do: customer lookup, register, id, email, quit."
+    puts "What do you want to do: (1) Register customer, (2) Create item, (3) Purchase, 
+          (4) Lookup customer, (5) Lookup item, (6) Lookup order, (0) Quit."
     input = gets.chomp!
     case input
-    when 'quit'
+    when '0'
         puts "Goodbye."
         break
-    when 'item'
+    when '4'
         puts "Enter ID or email of customer to lookup:"
         cust = gets.chomp!.split()
-        response = OrderClient.searchCust(cust)
+        response = OrderClient.getCustomer(cust)
         puts "status code #{response.code}"
         puts response.body
-    when 'register'
+    when '1'
         puts "Register a new customer. Enter lastName, firstName, email."
         data = gets.chomp!.split()
         response = OrderClient.register lastName: data[0], firstName: data[1], email: data[2]
         puts "status code #{response.code}"
         puts response.body
-    when 'email'
-        puts "Retrieve customer data by email. Enter email: "
-        email = gets.chomp!
-        response = OrderClient.getEmail(email)
-        puts "status code #{response.code}"
-        puts response.body
-    when 'id'
-        puts "Retrieve customer data by ID. Enter ID: "
+    when '6'
+        puts "Retrieve order by ID. Enter ID: "
         id = gets.chomp!
-        response = OrderClient.getId(id)
+        response = OrderClient.getOrder(id)
         puts "status code #{response.code}"
         puts response.body
+    when '3'
+        puts "Make a purchase. Enter item ID and customer email:"
+        data = gets.chomp!.split()
+        response = OrderClient.newOrder itemId: data[0], email: data[1]
     else puts "Invalid choice."
     end
 end
