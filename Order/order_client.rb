@@ -11,8 +11,8 @@ class OrderClient
             headers: { 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
     end
     
-    def self.createItem(data)
-        post '/items', body: data.to_json,
+    def self.createItem(item)
+        post '/items', body: item.to_json,
             headers: { 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
     end
     
@@ -46,22 +46,26 @@ while true
     when '0'
         puts "Goodbye."
         break
-    when '4'
-        puts "Enter ID or email of customer to lookup:"
-        cust = gets.chomp!.split()
-        response = OrderClient.getCustomer(cust)
-        puts "status code #{response.code}"
-        puts response.body
     when '1'
         puts "Register a new customer. Enter lastName, firstName, email."
-        data = gets.chomp!.split()
-        response = OrderClient.register lastName: data[0], firstName: data[1], email: data[2]
+        cust = gets.chomp!.split()
+        response = OrderClient.register lastName: cust[0], firstName: cust[1], email: cust[2]
         puts "status code #{response.code}"
         puts response.body
     when '2'
         puts "Create an item. Enter description, price, stockQty:"
+        item = gets.chomp!.split()
+        response = OrderClient.createItem description: item[0], price: item[1], stockQty: item[2]
+        puts "status code #{response.code}"
+        puts response.body
+    when '3'
+        puts "Make a purchase. Enter item ID and customer email:"
         data = gets.chomp!.split()
-        response = OrderClient.createItem description: data[0], price: data[1], stockQty: data[2]
+        response = OrderClient.newOrder itemId: data[0], email: data[1]
+    when '4'
+        puts "Enter ID or email of customer to lookup:"
+        cust = gets.chomp!.split()
+        response = OrderClient.getCustomer(cust)
         puts "status code #{response.code}"
         puts response.body
     when '5'
@@ -76,10 +80,6 @@ while true
         response = OrderClient.getOrder(id)
         puts "status code #{response.code}"
         puts response.body
-    when '3'
-        puts "Make a purchase. Enter item ID and customer email:"
-        data = gets.chomp!.split()
-        response = OrderClient.newOrder itemId: data[0], email: data[1]
     else puts "Invalid choice."
     end
 end
