@@ -1,4 +1,6 @@
 require 'httparty'
+require_relative 'app/models/customer.rb'
+require_relative 'app/models/item.rb'
 
 class OrderClient
     include HTTParty
@@ -7,8 +9,7 @@ class OrderClient
     format :json
     
     def self.register(cust)
-        post '/customers', body: cust.to_json,
-            headers: { 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
+        Customer.register(cust)
     end
     
     def self.createItem(item)
@@ -17,11 +18,7 @@ class OrderClient
     end
     
     def self.getCustomer(cust)
-        if !cust.include? '@' 
-            get "/orders?customerId=#{cust}"
-        else
-            get "/orders?email=#{cust}"
-        end
+        Customer.getCustomer(cust)
     end
     
     def self.getOrder(id)
@@ -29,7 +26,7 @@ class OrderClient
     end
     
     def self.getItem(id)
-        get "/items/#{id}"
+        Item.getItemById(id)
     end
     
     def self.newOrder(data)
@@ -64,10 +61,10 @@ while true
         response = OrderClient.newOrder itemId: data[0], email: data[1]
     when '4'
         puts "Enter ID or email of customer to lookup:"
-        cust = gets.chomp!.split()
+        cust = gets.chomp!
         response = OrderClient.getCustomer(cust)
-        puts "status code #{response.code}"
-        puts response.body
+        puts "status code #{response[0]}"
+        puts response[1]
     when '5'
         puts "Lookup item. Enter item ID:"
         id = gets.chomp!

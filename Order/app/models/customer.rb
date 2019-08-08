@@ -6,10 +6,21 @@ class Customer
     base_uri "http://localhost:8081"
     format :json
     
-    def Customer.getCustomerByEmail(email)
-        response = get "/customers?email=#{email}", headers: { "ACCEPT" => "application/json" }
+    def self.register(cust)
+        post '/customers', body: cust.to_json,   headers:{ 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
+    end
+    
+    def Customer.getCustomer(cust)
+        if cust.include? '@' 
+            response = get "/customers?email=#{cust}", headers: { "ACCEPT" => "application/json" }
+        else
+            response = get "/customers?id=#{cust}", headers: { "ACCEPT" => "application/json" }
+        end
         status = response.code
-        customer = JSON.parse response.body, symbolize_names: true
+        if status == 200
+            customer = JSON.parse response.body, symbolize_names: true
+        else customer = "Customer not found."
+        end
         # return http status code and ruby hash of customer data
         return status, customer
     end
