@@ -46,7 +46,7 @@ class ItemsController < ApplicationController
           head 204
         else
           # test
-          render json: @item.to_json, head 400
+          render json: @item.to_json, status: 400
           # originally
           #head 400
         end

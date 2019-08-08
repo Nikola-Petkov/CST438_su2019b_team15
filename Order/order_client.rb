@@ -13,8 +13,7 @@ class OrderClient
     end
     
     def self.createItem(item)
-        post '/items', body: item.to_json,
-            headers: { 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
+        Item.createItem(item)
     end
     
     def self.getCustomer(cust)
@@ -69,8 +68,8 @@ while true
         puts "Lookup item. Enter item ID:"
         id = gets.chomp!
         response = OrderClient.getItem(id)
-        puts "status code #{response.code}"
-        puts response.body
+        puts "status code #{response[0]}"
+        puts response[1]
     when '6'
         puts "Retrieve order by ID. Enter ID: "
         id = gets.chomp!
