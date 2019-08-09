@@ -1,3 +1,6 @@
+#require '/home/ec2-user/environment/assignment9/Order/app/models/customer.rb'
+#require '/home/ec2-user/environment/assignment9/Order/app/models/item.rb'
+
 class OrdersController < ApplicationController
     # GET /orders
     # search by customerId or email
@@ -5,7 +8,7 @@ class OrdersController < ApplicationController
 	    customerId = params['customerId']
 	    email = params['email']
 	    if !email.nil?
-		    code, customer = Customer.getCustomerByEmail(email)
+		    code, customer = Customer.getCustomer(email)
 		    if code != 200
 			    render json: {error: "Customer email not found. #{email}"}, status: 400
 			    return
@@ -35,7 +38,7 @@ class OrdersController < ApplicationController
     # POST /orders.json
     def create
 	    @order = Order.new
-	    code, customer = Customer.getCustomerByEmail(params[:email])
+	    code, customer = Customer.getCustomer(params[:email])
 	    
 	    if code != 200
 		    render json: { error: "Customer email not found. #{params[:email]}" }, status: 400
