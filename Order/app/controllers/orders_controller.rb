@@ -1,21 +1,15 @@
-#require '/home/ec2-user/environment/assignment9/Order/app/models/customer.rb'
-#require '/home/ec2-user/environment/assignment9/Order/app/models/item.rb'
-
 class OrdersController < ApplicationController
     # GET /orders
     # search by customerId or email
     def search
 	    customerId = params['customerId']
 	    email = params['email']
-	    if !email.nil?
-		    code, customer = Customer.getCustomer(email)
-		    if code != 200
-			    render json: {error: "Customer email not found. #{email}"}, status: 400
-			    return
-		    end
-		    customerId = customer[:id]
+	    if !customerId.nil?
+	    	orders = Order.where(customerId: customerId)
+	    else			# If email is blank, find customer ID by email lookup.
+	    	status, customer = Customer.getCustomer(email)
+	    	orders = Order.where(customerId: customer[:id])
 	    end
-	    orders = Order.where(customerId: customerId)
 	    render json: orders, status: 200
     end
     
