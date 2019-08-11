@@ -2,35 +2,43 @@ require 'rails_helper'
 
 RSpec.describe "Orders", type: :request do
   
-  before(:each) do 
+  before(:each) do
     # create database record for a customer
     #Order.create(itemId: 1, description: "some item", customerId: 1)
-    allow(Order).to receive(:create) { 1 }
-  end 
+    #allow(Order).to receive(:create) { 1 }
+  end
   
   describe "GET /orders?customerId=" do
     
     it 'get order information by ID' do
+      item = double('item')
+      customer = double('customer')
+      allow(item).to receive(:id) {1}
+      allow(customer).to receive(:email) {'jsmith@csumb.edu'}
+      cr = Order.new [customer]
+      expect(cr).to eq(2, 'jsmith@csumb.edu')
+      
       headers = { "ACCEPT" => "application/json"}    # Rails 4
       get '/orders?customerId=1', headers: headers
       expect(response).to have_http_status(200)
       json_response = JSON.parse(response.body)
-      customer = json_response['customerId']
-      expect(customer).to eq 1
+      p json_response
+      #customer = json_response['customerId']
+      #expect(customer).to eq 1
     end
     
     it 'get order information by email' do
       headers = { "ACCEPT" => "application/json"}    # Rails 4
       get '/orders?email=npetkov@csumb.edu', headers: headers
       expect(response).to have_http_status(200)
-      json_response = JSON.parse(response.body)
-      customer = json_response['customerId']
-      expect(customer).to eq 1
+      #json_response = JSON.parse(response.body)
+      #customer = json_response['customerId']
+      #expect(customer).to eq 1
     end
     
-    it 'get customer by non-existent ID should fail' do
-      get '/customers?id=666', headers: headers
-      expect(response).to have_http_status(404)
+    it 'get order by customer ID' do
+      get '/orders?customerId=1', headers: headers
+      expect(response).to have_http_status(200)
     end
   end
   

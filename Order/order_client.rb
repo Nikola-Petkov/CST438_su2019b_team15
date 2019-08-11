@@ -21,7 +21,7 @@ class OrderClient
     end
     
     def self.getOrder(id)
-        get "/orders", body: id.to_json,
+        get "/orders/#{id}",
             headers: { 'Content-Type' => 'application/json', 'ACCEPT' => 'application/json' }
     end
     
@@ -76,7 +76,7 @@ while true
     when '6'
         puts "Retrieve order by ID. Enter ID: "
         id = gets.chomp!
-        response = OrderClient.getOrder customerId: id
+        response = OrderClient.getOrder id
         puts "status code #{response.code}"
         puts response.body
     else puts "Invalid choice."

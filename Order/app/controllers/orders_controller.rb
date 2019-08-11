@@ -23,13 +23,6 @@ class OrdersController < ApplicationController
     # search by order id
     def searchByOrder
     	orderId = params['id']
-    	if !orderId.nil?
-    		code, order = Order.getOrderById(orderId)
-    		if code != 200
-    			render json: {error: "Order not found. #{orderId}"}, status: 400
-			    return
-		    end
-		end
 	    order = Order.where(id: orderId)
 	    render json: order, status: 200
 	end
