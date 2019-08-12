@@ -74,8 +74,37 @@ RSpec.describe "Orders", type: :request do
                                     'customerId' => 1,
                                     'price' => 13.50,
                                     'award' => 0,
-                                    'total' => 13.500)
-    
+                                    'total' => 13.50)
+      
+      expect(Customer).to receive(:getCustomer).with('np@csumb.edu') do
+        [ 200, {'id' => 1, 'award' => 1.35 } ]
+      end
+      
+      expect(Item).to receive(:getItemById).with(2) do
+        [ 200, { 'id' => 1, 'description' => 'some item',
+                 'price'=> 9.95, 'stockQty'=> 2 } ]
+      end
+      
+      allow(Customer).to receive(:putOrder) do |order|
+        expect(order.customerId).to eq 1
+        201
+      end 
+      
+      allow(Item).to receive(:putOrder) do |order|
+        expect(order.itemId).to eq 1
+        201
+      end
+      
+      post '/orders', params: order.to_json, headers: headers
+      
+      expect(response).to have_http_status(201)
+      order_json = JSON.parse(response.body)
+      expect(order_json).to include('itemId' => 1,
+                                    'description' => 'some item',
+                                    'customerId' => 1,
+                                    'price' => 9.95,
+                                    'award' => 1.35,
+                                    'total' => 8.60)
     end
   end
 end
