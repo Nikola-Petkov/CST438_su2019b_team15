@@ -38,16 +38,16 @@ class OrdersController < ApplicationController
 		    return
 	    end
 	    
-	    if item['stockQty'] <= 0
+	    if item[:stockQty] <= 0
 		    render json: { error: "Item is out of stock."}, status: 400
 		    return
 	    end
 	    
-	    @order.itemId = item['id']
-	    @order.description = item['description']
-	    @order.customerId = customer['id']
-	    @order.price = item['price']
-	    @order.award = customer['award']
+	    @order.itemId = item[:id]
+	    @order.description = item[:description]
+	    @order.customerId = customer[:id]
+	    @order.price = item[:price]
+	    @order.award = customer[:award]
 	    @order.total = @order.price - @order.award
 	    
 	    if @order.save

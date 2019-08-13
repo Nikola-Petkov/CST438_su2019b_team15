@@ -6,7 +6,6 @@ RSpec.describe "Orders", type: :request do
     # create database record for a customer
     Order.create(id: 1, itemId: 1, description: "some item", customerId: 1, price: 9.95, award: 0, total: 9.95)
     Order.create(id: 2, itemId: 2, description: "another item", customerId: 1, price: 13.50, award: 0, total: 23.45)
-    #allow(Order).to receive(:create) { 1 }
   end
   
   describe "GET /orders" do
@@ -52,7 +51,7 @@ RSpec.describe "Orders", type: :request do
       
       expect(Item).to receive(:getItemById).with(2) do
         [ 200, { 'id' => 2, 'description' => 'another item',
-                 'price'=> 13.50, 'stockQty'=> 2 } ]
+                 'price' => 13.50, 'stockQty' => 2 } ]
       end
       
       allow(Customer).to receive(:putOrder) do |order|
@@ -82,7 +81,7 @@ RSpec.describe "Orders", type: :request do
       
       expect(Item).to receive(:getItemById).with(2) do
         [ 200, { 'id' => 1, 'description' => 'some item',
-                 'price'=> 9.95, 'stockQty'=> 2 } ]
+                 'price' => 9.95, 'stockQty' => 2 } ]
       end
       
       allow(Customer).to receive(:putOrder) do |order|
